@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Web.Business\Web.Business.csproj" />
     <ProjectReference Include="..\Web.DataAccessor\Web.DataAccessor.csproj" />
   </ItemGroup>
 

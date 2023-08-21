@@ -6,4 +6,13 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Web.Contracts\Web.Contracts.csproj" />
+    <ProjectReference Include="..\Web.DataAccessor\Web.DataAccessor.csproj" />
+  </ItemGroup>
+
 </Project>
