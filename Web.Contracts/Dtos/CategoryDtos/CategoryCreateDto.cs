@@ -4,14 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Web.DataAccessor.Entities
+namespace Web.Contracts.Dtos.CategoryDtos
 {
-    public class Category
+    public class CategoryCreateDto
     {
-        public int CategoryId { get; set; }
         public string CategoryName { get; set; }
-        public string? Description { get; set; }
+        public string Description { get; set; }
         public DateTime DateCreated { get; set; }
-        public virtual ICollection<Post> Posts { get; set; }
     }
 }
