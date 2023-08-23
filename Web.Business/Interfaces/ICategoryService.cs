@@ -10,5 +10,8 @@ namespace Web.Business.Interfaces
     public interface ICategoryService
     {
         Task<List<CategoryDto>> GetAllAsync();
+        Task<CategoryDto> CreateAsync(CategoryCreateDto newCategory);
+        Task<CategoryDto> UpdateAsync(int id, CategoryUpdateDto updateCategory);
+        Task<bool> DeleteAsync(int id);
     }
 }

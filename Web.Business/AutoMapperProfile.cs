@@ -17,10 +17,13 @@ namespace Web.Business
         }
         private void FromPresentationLayer()
         {
-
+            //Mapping category from UI to entity server
+            CreateMap<CategoryCreateDto, Category>();
+            CreateMap<CategoryUpdateDto, Category>();
         }
         private void FromDataAccessorLayer()
         {
+            //Mapping category from data layer to UI
             CreateMap<Category, CategoryDto>();
         }
     }
