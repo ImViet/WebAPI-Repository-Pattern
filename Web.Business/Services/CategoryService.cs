@@ -39,7 +39,7 @@ namespace Web.Business.Services
             catch (Exception)
             {
 
-                throw new Exception("Fail");
+                throw new Exception();
             }
         }
 
@@ -59,7 +59,7 @@ namespace Web.Business.Services
             catch (Exception)
             {
 
-                throw new NotFoundException("Fail");
+                throw new Exception();
             }
         }
 
@@ -79,10 +79,10 @@ namespace Web.Business.Services
                 }
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
-                throw new NotFoundException(ex.ToString());
+                throw new Exception();
             }
         }
     }
