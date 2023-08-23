@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Web.Business.Interfaces;
 using Web.Contracts.Dtos.CategoryDtos;
+using Web.Contracts.Exceptions;
 using Web.DataAccessor.Entities;
 
 namespace Web.Business.Services
@@ -38,7 +39,7 @@ namespace Web.Business.Services
             catch (Exception)
             {
 
-                throw new Exception("Fail");
+                throw new Exception();
             }
         }
 
@@ -49,7 +50,7 @@ namespace Web.Business.Services
                 var category = await _categoryRepository.Entities.FirstOrDefaultAsync(x => x.CategoryId == id);
                 if (category == null)
                 {
-                    throw new Exception("Not found category!!!");
+                    throw new NotFoundException("Not found category!!!");
                 }
                 _mapper.Map(updateCategory, category);
                 await _categoryRepository.Update(category);
@@ -58,7 +59,7 @@ namespace Web.Business.Services
             catch (Exception)
             {
 
-                throw new Exception("Fail");
+                throw new Exception();
             }
         }
 
@@ -69,7 +70,7 @@ namespace Web.Business.Services
                 var category = await _categoryRepository.Entities.FirstOrDefaultAsync(x => x.CategoryId == id);
                 if (category == null)
                 {
-                    throw new Exception("Not found category!!!");
+                    throw new NotFoundException("Not found category!!!");
                 }
                 var result = await _categoryRepository.Delete(category);
                 if (!result)
@@ -78,10 +79,10 @@ namespace Web.Business.Services
                 }
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
-                throw new Exception(ex.ToString());
+                throw new Exception();
             }
         }
     }

@@ -1,3 +1,4 @@
+using Web.BackendAPI.Middlewares;
 using Web.Business;
 using Web.DataAccessor;
 
@@ -22,7 +23,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseMiddleware<ErrorHandlerMiddleware>();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
