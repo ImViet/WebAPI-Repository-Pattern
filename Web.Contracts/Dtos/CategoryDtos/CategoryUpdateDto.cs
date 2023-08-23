@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Web.Contracts.Dtos.CategoryDtos
 {
-    public class CategoryCreateDto
+    public class CategoryUpdateDto
     {
         public string CategoryName { get; set; }
         public string? Description { get; set; }

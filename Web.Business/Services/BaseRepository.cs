@@ -22,5 +22,24 @@ namespace Web.Business.Services
         {
             return await _context.Set<T>().ToListAsync();
         }
+        public async Task<T> Add(T entity)
+        {
+            await _context.Set<T>().AddAsync(entity);
+            await _context.SaveChangesAsync();
+            return entity;
+        }
+        public async Task<T> Update(T entity)
+        {
+            _context.Entry(entity).CurrentValues.SetValues(entity);
+            await _context.SaveChangesAsync();
+            return entity;
+        }
+
+        public async Task<bool> Delete(T entity)
+        {
+            _context.Set<T>().Remove(entity);
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }

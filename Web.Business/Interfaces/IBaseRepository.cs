@@ -10,5 +10,8 @@ namespace Web.Business.Interfaces
     {
         IQueryable<T> Entities { get; }
         Task<IEnumerable<T>> GetAll();
+        Task<T> Add(T entity);
+        Task<T> Update(T entity);
+        Task<bool> Delete(T entity);
     }
 }

@@ -25,5 +25,64 @@ namespace Web.Business.Services
             var listCategory = await _categoryRepository.Entities.ToListAsync();
             return _mapper.Map<List<CategoryDto>>(listCategory);
         }
+
+        public async Task<CategoryDto> CreateAsync(CategoryCreateDto newCategory)
+        {
+            try
+            {
+                var category = _mapper.Map<Category>(newCategory);
+                category.DateCreated = DateTime.Now;
+                var result = await _categoryRepository.Add(category);
+                return _mapper.Map<CategoryDto>(category);
+            }
+            catch (Exception)
+            {
+
+                throw new Exception("Fail");
+            }
+        }
+
+        public async Task<CategoryDto> UpdateAsync(int id, CategoryUpdateDto updateCategory)
+        {
+            try
+            {
+                var category = await _categoryRepository.Entities.FirstOrDefaultAsync(x => x.CategoryId == id);
+                if (category == null)
+                {
+                    throw new Exception("Not found category!!!");
+                }
+                _mapper.Map(updateCategory, category);
+                await _categoryRepository.Update(category);
+                return _mapper.Map<CategoryDto>(category);
+            }
+            catch (Exception)
+            {
+
+                throw new Exception("Fail");
+            }
+        }
+
+        public async Task<bool> DeleteAsync(int id)
+        {
+            try
+            {
+                var category = await _categoryRepository.Entities.FirstOrDefaultAsync(x => x.CategoryId == id);
+                if (category == null)
+                {
+                    throw new Exception("Not found category!!!");
+                }
+                var result = await _categoryRepository.Delete(category);
+                if (!result)
+                {
+                    return false;
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.ToString());
+            }
+        }
     }
 }
