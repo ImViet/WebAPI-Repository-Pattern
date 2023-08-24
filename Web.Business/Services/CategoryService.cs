@@ -29,61 +29,37 @@ namespace Web.Business.Services
 
         public async Task<CategoryDto> CreateAsync(CategoryCreateDto newCategory)
         {
-            try
-            {
-                var category = _mapper.Map<Category>(newCategory);
-                category.DateCreated = DateTime.Now;
-                var result = await _categoryRepository.Add(category);
-                return _mapper.Map<CategoryDto>(category);
-            }
-            catch (Exception)
-            {
-
-                throw new Exception();
-            }
+            var category = _mapper.Map<Category>(newCategory);
+            category.DateCreated = DateTime.Now;
+            var result = await _categoryRepository.Add(category);
+            return _mapper.Map<CategoryDto>(category);
         }
 
         public async Task<CategoryDto> UpdateAsync(int id, CategoryUpdateDto updateCategory)
         {
-            try
+            var category = await _categoryRepository.Entities.FirstOrDefaultAsync(x => x.CategoryId == id);
+            if (category == null)
             {
-                var category = await _categoryRepository.Entities.FirstOrDefaultAsync(x => x.CategoryId == id);
-                if (category == null)
-                {
-                    throw new NotFoundException("Not found category!!!");
-                }
-                _mapper.Map(updateCategory, category);
-                await _categoryRepository.Update(category);
-                return _mapper.Map<CategoryDto>(category);
+                throw new NotFoundException("Not found category!!!");
             }
-            catch (Exception)
-            {
-
-                throw new Exception();
-            }
+            _mapper.Map(updateCategory, category);
+            await _categoryRepository.Update(category);
+            return _mapper.Map<CategoryDto>(category);
         }
 
         public async Task<bool> DeleteAsync(int id)
         {
-            try
+            var category = await _categoryRepository.Entities.FirstOrDefaultAsync(x => x.CategoryId == id);
+            if (category == null)
             {
-                var category = await _categoryRepository.Entities.FirstOrDefaultAsync(x => x.CategoryId == id);
-                if (category == null)
-                {
-                    throw new NotFoundException("Not found category!!!");
-                }
-                var result = await _categoryRepository.Delete(category);
-                if (!result)
-                {
-                    return false;
-                }
-                return true;
+                throw new NotFoundException("Not found category!!!");
             }
-            catch (Exception)
+            var result = await _categoryRepository.Delete(category);
+            if (!result)
             {
-
-                throw new Exception();
+                return false;
             }
+            return true;
         }
     }
 }
