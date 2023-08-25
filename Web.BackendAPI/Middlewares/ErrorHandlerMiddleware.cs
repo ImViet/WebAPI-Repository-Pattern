@@ -22,15 +22,17 @@ namespace Web.BackendAPI.Middlewares
                 var errorResult = new ErrorResultModel();
                 var response = context.Response;
                 response.ContentType = "application/json";
+                errorResult.Message = error.Message ?? "Something went wrong!!!";
                 switch (error)
                 {
                     case NotFoundException e:
                         errorResult.StatusCode = (int)HttpStatusCode.NotFound;
-                        errorResult.Message = error.InnerException?.Message ?? "Something went wrong!!!";
+                        break;
+                    case ErrorException e:
+                        errorResult.StatusCode = (int)HttpStatusCode.BadRequest;
                         break;
                     default:
                         errorResult.StatusCode = (int)HttpStatusCode.InternalServerError;
-                        errorResult.Message = error.InnerException?.Message ?? "Something went wrong!!!";
                         break;
                 }
                 var result = JsonConvert.SerializeObject(errorResult);

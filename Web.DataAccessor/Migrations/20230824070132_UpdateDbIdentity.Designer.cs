@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Web.DataAccessor.Data;
 
@@ -11,9 +12,10 @@ using Web.DataAccessor.Data;
 namespace Web.DataAccessor.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230824070132_UpdateDbIdentity")]
+    partial class UpdateDbIdentity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -192,7 +194,7 @@ namespace Web.DataAccessor.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AppRoles", (string)null);
+                    b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("Web.DataAccessor.Entities.User", b =>
@@ -208,9 +210,6 @@ namespace Web.DataAccessor.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("DOB")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
@@ -259,7 +258,7 @@ namespace Web.DataAccessor.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AppUsers", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("Web.DataAccessor.Entities.Post", b =>
