@@ -10,7 +10,8 @@ builder.Services.AddAuthenticationRegister();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+builder.Services.AddSwaggerRegister();
 
 //Add service register in another project
 builder.Services.AddDataAccessorLayer(builder.Configuration);

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Web.Contracts.Dtos.AuthDtos;
 using Web.Contracts.Dtos.CategoryDtos;
 using Web.Contracts.Dtos.UserDtos;
 using Web.DataAccessor.Entities;
@@ -30,6 +31,7 @@ namespace Web.Business
             CreateMap<Category, CategoryDto>();
             //Mapping user from data layer to UI
             CreateMap<User, UserDto>();
+            CreateMap<User, AccountDto>();
         }
     }
 }
