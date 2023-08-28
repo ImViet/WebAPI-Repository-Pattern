@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Web.Business.Interfaces;
 using Web.Contracts.Dtos.CategoryDtos;
+using Web.Contracts.Dtos.QueryDtos.CategoryQueryDtos;
 using Web.Contracts.Exceptions;
 using Web.DataAccessor.Entities;
 
@@ -26,7 +27,19 @@ namespace Web.Business.Services
             var listCategory = await _categoryRepository.Entities.ToListAsync();
             return _mapper.Map<List<CategoryDto>>(listCategory);
         }
-
+        public async Task<List<CategoryDto>> GetPagingAsync(CategoryQueryDto query)
+        {
+            var listCategory = _categoryRepository.Entities.AsQueryable();
+            if(!string.IsNullOrEmpty(query.Search))
+            {
+                listCategory = listCategory.Where(x => x.CategoryName.ToLower().Contains(query.Search.ToLower()));
+            }
+            var listCategoryResult = await listCategory
+                            .Skip((query.PageIndex - 1) * query.PageSize)
+                            .Take(query.PageSize)
+                            .ToListAsync();
+            return _mapper.Map<List<CategoryDto>>(listCategoryResult);
+        }
         public async Task<CategoryDto> CreateAsync(CategoryCreateDto newCategory)
         {
             var category = _mapper.Map<Category>(newCategory);
