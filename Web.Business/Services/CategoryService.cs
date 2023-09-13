@@ -9,6 +9,7 @@ using Web.Business.Interfaces;
 using Web.Contracts.Dtos.CategoryDtos;
 using Web.Contracts.Dtos.QueryDtos.CategoryQueryDtos;
 using Web.Contracts.Exceptions;
+using Web.DataAccessor.Data;
 using Web.DataAccessor.Entities;
 
 namespace Web.Business.Services
@@ -17,10 +18,12 @@ namespace Web.Business.Services
     {
         private readonly IBaseRepository<Category> _categoryRepository;
         private readonly IMapper _mapper;
-        public CategoryService(IBaseRepository<Category> categoryRepository, IMapper mapper)
+        private readonly ApplicationDbContext _context;
+        public CategoryService(IBaseRepository<Category> categoryRepository, IMapper mapper, ApplicationDbContext context)
         {
             _categoryRepository = categoryRepository;
             _mapper = mapper;
+            _context = context;
         }
         public async Task<List<CategoryDto>> GetAllAsync()
         {
@@ -39,6 +42,15 @@ namespace Web.Business.Services
                             .Take(query.PageSize)
                             .ToListAsync();
             return _mapper.Map<List<CategoryDto>>(listCategoryResult);
+        }
+        public async Task<CategoryDto> GetByIdAsync(int id)
+        {
+            var category = await _categoryRepository.GetByIdAsync(id);
+            if(category == null)
+            {
+                throw new NotFoundException("Not found category!!!");
+            }
+            return _mapper.Map<CategoryDto>(category);
         }
         public async Task<CategoryDto> CreateAsync(CategoryCreateDto newCategory)
         {
@@ -73,6 +85,12 @@ namespace Web.Business.Services
                 return false;
             }
             return true;
+        }
+
+        public async Task<List<CategoryDto>> GetAllWithSPAsync()
+        {
+            var listCate = await _context.Categories.FromSqlRaw("Exec sp_GetAllCategory").ToListAsync();
+            return _mapper.Map<List<CategoryDto>>(listCate);
         }
     }
 }
