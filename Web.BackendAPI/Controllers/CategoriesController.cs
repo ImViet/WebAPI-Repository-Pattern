@@ -28,6 +28,12 @@ namespace Web.BackendAPI.Controllers
         {
             return Ok(await _categoryService.GetPagingAsync(query));
         }
+        [HttpGet]
+        [Route("{id}")]
+        public async Task<ActionResult> GetById(int id)
+        {
+            return Ok(await _categoryService.GetByIdAsync(id));
+        }
         [HttpPost]
         public async Task<ActionResult> Create([FromForm]CategoryCreateDto newCategory)
         {
@@ -42,6 +48,12 @@ namespace Web.BackendAPI.Controllers
         public async Task<ActionResult> Delete(int id)
         {
             return Ok(await _categoryService.DeleteAsync(id));
+        }
+        [HttpGet]
+        [Route("get-all-SP")]
+        public async Task<ActionResult> GetAllWithSP()
+        {
+            return Ok(await _categoryService.GetAllWithSPAsync());
         }
     }
 }

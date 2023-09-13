@@ -12,8 +12,12 @@ namespace Web.Business.Interfaces
     {
         Task<List<CategoryDto>> GetAllAsync();
         Task<List<CategoryDto>> GetPagingAsync(CategoryQueryDto query);
+        Task<CategoryDto> GetByIdAsync(int id);
         Task<CategoryDto> CreateAsync(CategoryCreateDto newCategory);
         Task<CategoryDto> UpdateAsync(int id, CategoryUpdateDto updateCategory);
         Task<bool> DeleteAsync(int id);
+
+        //Test with Store procedure
+        Task<List<CategoryDto>> GetAllWithSPAsync();
     }
 }
