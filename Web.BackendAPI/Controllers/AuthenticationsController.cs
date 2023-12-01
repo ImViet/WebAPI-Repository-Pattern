@@ -19,17 +19,7 @@ namespace Web.BackendAPI.Controllers
         [Route("login")]
         public async Task<IActionResult> Login([FromForm] UserLoginDto userLogin)
         {
-            var account = await _authenticationService.GetAccountByUserNameAsync(userLogin.UserName);
-            if (account == null)
-            {
-                return BadRequest("User not found");
-            }
-            account = await _authenticationService.LoginAsync(userLogin);
-            if(account == null)
-            {
-                return BadRequest("Username or Password is incorrect. Please try again.");
-            }
-            return Ok(account);
+            return Ok(await _authenticationService.LoginAsync(userLogin));
         }
         
     }
