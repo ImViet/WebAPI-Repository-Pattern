@@ -89,7 +89,7 @@ namespace Web.Business.Services
 
         public async Task<List<CategoryDto>> GetAllWithSPAsync()
         {
-            var listCate = await _context.Categories.FromSqlRaw("Exec sp_GetAllCategory").ToListAsync();
+            var listCate = await _context.Sp_GetAllCategory_Results.FromSqlRaw("Exec sp_GetAllCategory").ToListAsync();
             return _mapper.Map<List<CategoryDto>>(listCate);
         }
     }

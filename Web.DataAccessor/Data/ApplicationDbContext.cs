@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Web.DataAccessor.Configurations;
 using Web.DataAccessor.Entities;
+using Web.DataAccessor.Entities.StoreProcedureResult;
 
 namespace Web.DataAccessor.Data
 {
@@ -19,6 +20,9 @@ namespace Web.DataAccessor.Data
         }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Post> Posts { get; set; }
+
+        //Store procedure result
+        public DbSet<Sp_GetAllCategory_Result> Sp_GetAllCategory_Results { get; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //Fluent API
@@ -33,6 +37,9 @@ namespace Web.DataAccessor.Data
             modelBuilder.Entity<IdentityUserToken<Guid>>().ToTable("AppUserTokens").HasKey(x => x.UserId);
             modelBuilder.Entity<IdentityUserClaim<Guid>>().ToTable("AppUserClaims");
             modelBuilder.Entity<IdentityRoleClaim<Guid>>().ToTable("AppRoleClaims");
+
+            //Config test store procedure
+            modelBuilder.Entity<Sp_GetAllCategory_Result>().HasNoKey();
         }
     }
 }
