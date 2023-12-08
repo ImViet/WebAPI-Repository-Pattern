@@ -9,7 +9,7 @@ namespace Web.BackendAPI.Controllers
 {
     [Route("api/categories")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class CategoriesController : ControllerBase
     {
         private readonly ICategoryService _categoryService;
@@ -24,7 +24,7 @@ namespace Web.BackendAPI.Controllers
         }
         [HttpGet]
         [Route("get-paging")]
-        public async Task<ActionResult> GetPaging([FromQuery]CategoryQueryDto query)
+        public async Task<ActionResult> GetPaging([FromQuery] CategoryQueryDto query)
         {
             return Ok(await _categoryService.GetPagingAsync(query));
         }
@@ -35,14 +35,14 @@ namespace Web.BackendAPI.Controllers
             return Ok(await _categoryService.GetByIdAsync(id));
         }
         [HttpPost]
-        public async Task<ActionResult> Create([FromForm]CategoryCreateDto newCategory)
+        public async Task<ActionResult> Create([FromForm] CategoryCreateDto newCategory)
         {
             return Ok(await _categoryService.CreateAsync(newCategory));
         }
         [HttpPut("{id}")]
-        public async Task<ActionResult> Update(int id, [FromForm] CategoryUpdateDto updateCategory)
+        public async Task<ActionResult> Update([FromForm] CategoryUpdateDto updateCategory)
         {
-            return Ok(await _categoryService.UpdateAsync(id, updateCategory));
+            return Ok(await _categoryService.UpdateAsync(updateCategory));
         }
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
