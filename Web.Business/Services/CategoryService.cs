@@ -3,12 +3,14 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Web.Business.Interfaces;
 using Web.Contracts.Dtos.CategoryDtos;
 using Web.Contracts.Dtos.QueryDtos.CategoryQueryDtos;
 using Web.Contracts.Exceptions;
+using Web.Contracts.Models;
 using Web.DataAccessor.Data;
 using Web.DataAccessor.Entities;
 
@@ -25,28 +27,54 @@ namespace Web.Business.Services
             _mapper = mapper;
             _context = context;
         }
-        public async Task<List<CategoryDto>> GetAllAsync()
+        public async Task<CommandResultModel<List<CategoryDto>>> GetAllAsync()
         {
-            var listCategory = await _categoryRepository.Entities.ToListAsync();
-            return _mapper.Map<List<CategoryDto>>(listCategory);
-        }
-        public async Task<List<CategoryDto>> GetPagingAsync(CategoryQueryDto query)
-        {
-            var listCategory = _categoryRepository.Entities.AsQueryable();
-            if(!string.IsNullOrEmpty(query.Search))
+            try
             {
-                listCategory = listCategory.Where(x => x.CategoryName.ToLower().Contains(query.Search.ToLower()));
+                var listCategory = await _categoryRepository.Entities.ToListAsync();
+                var data = _mapper.Map<List<CategoryDto>>(listCategory);
+                return new CommandResultModel<List<CategoryDto>>()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "Success",
+                    Data = data
+                };
             }
-            var listCategoryResult = await listCategory
-                            .Skip((query.PageIndex - 1) * query.PageSize)
-                            .Take(query.PageSize)
-                            .ToListAsync();
-            return _mapper.Map<List<CategoryDto>>(listCategoryResult);
+            catch (Exception ex)
+            {
+                throw new ErrorException(ex.ToString());
+            }
+        }
+        public async Task<CommandResultModel<List<CategoryDto>>> GetPagingAsync(CategoryQueryDto query)
+        {
+            try
+            {
+                var listCategory = _categoryRepository.Entities.AsQueryable();
+                if (!string.IsNullOrEmpty(query.Search))
+                {
+                    listCategory = listCategory.Where(x => x.CategoryName.ToLower().Contains(query.Search.ToLower()));
+                }
+                var listCategoryResult = await listCategory
+                                .Skip((query.PageIndex - 1) * query.PageSize)
+                                .Take(query.PageSize)
+                                .ToListAsync();
+                var data = _mapper.Map<List<CategoryDto>>(listCategoryResult);
+                return new CommandResultModel<List<CategoryDto>>()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "Success",
+                    Data = data
+                };
+            }
+            catch (Exception ex)
+            {
+                throw new ErrorException(ex.ToString());
+            }
         }
         public async Task<CategoryDto> GetByIdAsync(int id)
         {
             var category = await _categoryRepository.GetByIdAsync(id);
-            if(category == null)
+            if (category == null)
             {
                 throw new NotFoundException("Not found category!!!");
             }
@@ -60,9 +88,9 @@ namespace Web.Business.Services
             return _mapper.Map<CategoryDto>(category);
         }
 
-        public async Task<CategoryDto> UpdateAsync(int id, CategoryUpdateDto updateCategory)
+        public async Task<CategoryDto> UpdateAsync(CategoryUpdateDto updateCategory)
         {
-            var category = await _categoryRepository.Entities.FirstOrDefaultAsync(x => x.CategoryId == id);
+            var category = await _categoryRepository.Entities.FirstOrDefaultAsync(x => x.CategoryId == updateCategory.Id);
             if (category == null)
             {
                 throw new NotFoundException("Not found category!!!");
