@@ -13,12 +13,9 @@ namespace Web.Business.Interfaces
     {
         Task<CommandResultModel<List<CategoryDto>>> GetAllAsync();
         Task<CommandResultModel<List<CategoryDto>>> GetPagingAsync(CategoryQueryDto query);
-        Task<CategoryDto> GetByIdAsync(int id);
-        Task<CategoryDto> CreateAsync(CategoryCreateDto newCategory);
-        Task<CategoryDto> UpdateAsync(CategoryUpdateDto updateCategory);
-        Task<bool> DeleteAsync(int id);
-
-        //Test with Store procedure
-        Task<List<CategoryDto>> GetAllWithSPAsync();
+        Task<CommandResultModel<CategoryDto>> GetByIdAsync(int id);
+        Task<CommandResultModel<bool>> CreateAsync(CategoryCreateDto newCategory);
+        Task<CommandResultModel<bool>> UpdateAsync(CategoryUpdateDto updateCategory);
+        Task<CommandResultModel<bool>> DeleteAsync(int id);
     }
 }

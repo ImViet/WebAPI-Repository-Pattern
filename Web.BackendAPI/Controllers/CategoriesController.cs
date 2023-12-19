@@ -39,21 +39,15 @@ namespace Web.BackendAPI.Controllers
         {
             return Ok(await _categoryService.CreateAsync(newCategory));
         }
-        [HttpPut("{id}")]
+        [HttpPut("update")]
         public async Task<ActionResult> Update([FromForm] CategoryUpdateDto updateCategory)
         {
             return Ok(await _categoryService.UpdateAsync(updateCategory));
         }
-        [HttpDelete("{id}")]
+        [HttpDelete("delete")]
         public async Task<ActionResult> Delete(int id)
         {
             return Ok(await _categoryService.DeleteAsync(id));
-        }
-        [HttpGet]
-        [Route("get-all-SP")]
-        public async Task<ActionResult> GetAllWithSP()
-        {
-            return Ok(await _categoryService.GetAllWithSPAsync());
         }
     }
 }

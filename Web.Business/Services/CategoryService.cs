@@ -40,9 +40,9 @@ namespace Web.Business.Services
                     Data = data
                 };
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw new ErrorException(ex.ToString());
+                throw;
             }
         }
         public async Task<CommandResultModel<List<CategoryDto>>> GetPagingAsync(CategoryQueryDto query)
@@ -66,59 +66,97 @@ namespace Web.Business.Services
                     Data = data
                 };
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw new ErrorException(ex.ToString());
+                throw;
             }
         }
-        public async Task<CategoryDto> GetByIdAsync(int id)
+        public async Task<CommandResultModel<CategoryDto>> GetByIdAsync(int id)
         {
-            var category = await _categoryRepository.GetByIdAsync(id);
-            if (category == null)
+            try
             {
-                throw new NotFoundException("Not found category!!!");
+                var category = await _categoryRepository.GetByIdAsync(id);
+                if (category == null)
+                {
+                    throw new NotFoundException("Not found category!!!");
+                }
+                var data = _mapper.Map<CategoryDto>(category);
+                return new CommandResultModel<CategoryDto>()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "Success",
+                    Data = data
+                };
             }
-            return _mapper.Map<CategoryDto>(category);
+            catch (Exception)
+            {
+                throw;
+            }
         }
-        public async Task<CategoryDto> CreateAsync(CategoryCreateDto newCategory)
+        public async Task<CommandResultModel<bool>> CreateAsync(CategoryCreateDto newCategory)
         {
-            var category = _mapper.Map<Category>(newCategory);
-            category.DateCreated = DateTime.Now;
-            var result = await _categoryRepository.Add(category);
-            return _mapper.Map<CategoryDto>(category);
+            try
+            {
+                var category = _mapper.Map<Category>(newCategory);
+                category.DateCreated = DateTime.Now;
+                await _categoryRepository.Add(category);
+                return new CommandResultModel<bool>()
+                {
+                    StatusCode = (int)HttpStatusCode.Created,
+                    Message = "Create success",
+                };
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
-        public async Task<CategoryDto> UpdateAsync(CategoryUpdateDto updateCategory)
+        public async Task<CommandResultModel<bool>> UpdateAsync(CategoryUpdateDto updateCategory)
         {
-            var category = await _categoryRepository.Entities.FirstOrDefaultAsync(x => x.CategoryId == updateCategory.Id);
-            if (category == null)
+            try
             {
-                throw new NotFoundException("Not found category!!!");
+                var category = await _categoryRepository.GetByIdAsync(updateCategory.Id);
+                if (category == null)
+                {
+                    throw new NotFoundException("Not found category!!!");
+                }
+                _mapper.Map(updateCategory, category);
+                await _categoryRepository.Update(category);
+                var data = _mapper.Map<CategoryDto>(category);
+                return new CommandResultModel<bool>()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "Update success",
+                    Data = true
+                };
             }
-            _mapper.Map(updateCategory, category);
-            await _categoryRepository.Update(category);
-            return _mapper.Map<CategoryDto>(category);
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task<CommandResultModel<bool>> DeleteAsync(int id)
         {
-            var category = await _categoryRepository.Entities.FirstOrDefaultAsync(x => x.CategoryId == id);
-            if (category == null)
+            try
             {
-                throw new NotFoundException("Not found category!!!");
+                var category = await _categoryRepository.GetByIdAsync(id);
+                if (category == null)
+                {
+                    throw new NotFoundException("Not found category!!!");
+                }
+                await _categoryRepository.Delete(category);
+                return new CommandResultModel<bool>()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "Delete sucess"
+                };
             }
-            var result = await _categoryRepository.Delete(category);
-            if (!result)
+            catch (Exception)
             {
-                return false;
+                throw;
             }
-            return true;
-        }
-
-        public async Task<List<CategoryDto>> GetAllWithSPAsync()
-        {
-            var listCate = await _context.Sp_GetAllCategory_Results.FromSqlRaw("Exec sp_GetAllCategory").ToListAsync();
-            return _mapper.Map<List<CategoryDto>>(listCate);
         }
     }
 }

@@ -12,22 +12,26 @@ using Web.DataAccessor.Entities.StoreProcedureResult;
 
 namespace Web.DataAccessor.Data
 {
-    public class ApplicationDbContext: IdentityDbContext<User, Role, Guid>
+    public class ApplicationDbContext : IdentityDbContext<User, Role, Guid>
     {
-        public ApplicationDbContext(DbContextOptions options): base(options)
+        public ApplicationDbContext() { }
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
 
         }
         public DbSet<Category> Categories { get; set; }
-        public DbSet<Post> Posts { get; set; }
+        public DbSet<Product> Products { get; set; }
+        public DbSet<ProductImage> ProductImages { get; set; }
+        public DbSet<ProductsInCategories> ProductsInCategories { get; set; }
 
-        //Store procedure result
-        public DbSet<Sp_GetAllCategory_Result> Sp_GetAllCategory_Results { get; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
             //Fluent API
             modelBuilder.ApplyConfiguration(new CategoryConfiguration());
-            modelBuilder.ApplyConfiguration(new PostConfiguration());
+            modelBuilder.ApplyConfiguration(new ProductConfiguration());
+            modelBuilder.ApplyConfiguration(new ProductImageConfiguration());
+            modelBuilder.ApplyConfiguration(new ProductsInCategoriesConfiguration());
             modelBuilder.ApplyConfiguration(new UserConfiguration());
             modelBuilder.ApplyConfiguration(new RoleConfiguration());
 
@@ -37,9 +41,14 @@ namespace Web.DataAccessor.Data
             modelBuilder.Entity<IdentityUserToken<Guid>>().ToTable("AppUserTokens").HasKey(x => x.UserId);
             modelBuilder.Entity<IdentityUserClaim<Guid>>().ToTable("AppUserClaims");
             modelBuilder.Entity<IdentityRoleClaim<Guid>>().ToTable("AppRoleClaims");
-
-            //Config test store procedure
-            modelBuilder.Entity<Sp_GetAllCategory_Result>().HasNoKey();
+        }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            base.OnConfiguring(optionsBuilder);
+            if (!optionsBuilder.IsConfigured)
+            {
+                optionsBuilder.UseSqlServer("Server=VPQ5-HP440-002\\QUOCVIET;Database=WebReposPattern;Trusted_Connection=True;");
+            }
         }
     }
 }
