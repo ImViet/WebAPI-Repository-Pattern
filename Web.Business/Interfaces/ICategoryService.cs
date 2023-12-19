@@ -12,7 +12,7 @@ namespace Web.Business.Interfaces
     public interface ICategoryService
     {
         Task<CommandResultModel<List<CategoryDto>>> GetAllAsync();
-        Task<CommandResultModel<List<CategoryDto>>> GetPagingAsync(CategoryQueryDto query);
+        Task<CommandResultModel<PagedResponseModel<CategoryDto>>> GetPagingAsync(CategoryQueryDto query);
         Task<CommandResultModel<CategoryDto>> GetByIdAsync(int id);
         Task<CommandResultModel<bool>> CreateAsync(CategoryCreateDto newCategory);
         Task<CommandResultModel<bool>> UpdateAsync(CategoryUpdateDto updateCategory);

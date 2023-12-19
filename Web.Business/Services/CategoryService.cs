@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -6,6 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Web.Business.Extensions;
 using Web.Business.Interfaces;
 using Web.Contracts.Dtos.CategoryDtos;
 using Web.Contracts.Dtos.QueryDtos.CategoryQueryDtos;
@@ -45,7 +47,7 @@ namespace Web.Business.Services
                 throw;
             }
         }
-        public async Task<CommandResultModel<List<CategoryDto>>> GetPagingAsync(CategoryQueryDto query)
+        public async Task<CommandResultModel<PagedResponseModel<CategoryDto>>> GetPagingAsync(CategoryQueryDto query)
         {
             try
             {
@@ -54,16 +56,24 @@ namespace Web.Business.Services
                 {
                     listCategory = listCategory.Where(x => x.CategoryName.ToLower().Contains(query.Search.ToLower()));
                 }
-                var listCategoryResult = await listCategory
-                                .Skip((query.PageIndex - 1) * query.PageSize)
-                                .Take(query.PageSize)
-                                .ToListAsync();
-                var data = _mapper.Map<List<CategoryDto>>(listCategoryResult);
-                return new CommandResultModel<List<CategoryDto>>()
+
+                var pagedResult = await listCategory
+                                        .AsNoTracking()
+                                        .PaginateAsync<Category>(query.PageIndex, query.PageSize);
+
+                var data = _mapper.Map<List<CategoryDto>>(pagedResult.Items);
+
+                return new CommandResultModel<PagedResponseModel<CategoryDto>>()
                 {
                     StatusCode = (int)HttpStatusCode.OK,
                     Message = "Success",
-                    Data = data
+                    Data = new PagedResponseModel<CategoryDto>
+                    {
+                        CurrentPage = pagedResult.CurrentPage,
+                        TotalItems = pagedResult.TotalItems,
+                        TotalPages = pagedResult.TotalPages,
+                        Items = data
+                    }
                 };
             }
             catch (Exception)
@@ -123,12 +133,10 @@ namespace Web.Business.Services
                 }
                 _mapper.Map(updateCategory, category);
                 await _categoryRepository.Update(category);
-                var data = _mapper.Map<CategoryDto>(category);
                 return new CommandResultModel<bool>()
                 {
                     StatusCode = (int)HttpStatusCode.OK,
                     Message = "Update success",
-                    Data = true
                 };
             }
             catch (Exception)
@@ -150,7 +158,7 @@ namespace Web.Business.Services
                 return new CommandResultModel<bool>()
                 {
                     StatusCode = (int)HttpStatusCode.OK,
-                    Message = "Delete sucess"
+                    Message = "Delete success"
                 };
             }
             catch (Exception)
