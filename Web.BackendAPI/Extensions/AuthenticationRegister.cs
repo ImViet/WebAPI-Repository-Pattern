@@ -61,7 +61,7 @@ namespace Web.BackendAPI.Extensions
                             context.HandleResponse();
                             context.Response.StatusCode = 401;
                             context.Response.ContentType = "application/json";
-                            var result = JsonConvert.SerializeObject("You are not Authorized");
+                            var result = JsonConvert.SerializeObject("You are not authorized");
                             return context.Response.WriteAsync(result);
                         },
                         OnForbidden = context =>

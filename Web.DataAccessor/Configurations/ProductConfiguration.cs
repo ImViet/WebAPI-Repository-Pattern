@@ -9,14 +9,17 @@ using Web.DataAccessor.Entities;
 
 namespace Web.DataAccessor.Configurations
 {
-    public class CategoryConfiguration : IEntityTypeConfiguration<Category>
+    public class ProductConfiguration : IEntityTypeConfiguration<Product>
     {
-        public void Configure(EntityTypeBuilder<Category> builder)
+        public void Configure(EntityTypeBuilder<Product> builder)
         {
-            builder.HasKey(x => x.CategoryId);
-            builder.Property(x => x.CategoryId).UseIdentityColumn();
-            builder.Property(x => x.CategoryName).IsRequired();
+            builder.HasKey(x => x.Id);
+
+            builder.Property(x => x.Id).UseIdentityColumn();
+
+            builder.Property(x => x.Title).IsRequired();
             builder.Property(x => x.DateCreated).IsRequired();
+            builder.Property(x => x.Price).IsRequired();
         }
     }
 }
