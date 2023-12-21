@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Web.Business.Interfaces;
+using Web.Contracts.Dtos.ProductDtos;
 
 namespace Web.BackendAPI.Controllers
 {
@@ -13,6 +14,11 @@ namespace Web.BackendAPI.Controllers
         public ProductsController(IProductService productService)
         {
             _productService = productService;
+        }
+        [HttpPost]
+        public async Task<ActionResult> Create([FromForm] ProductCreateDto newProduct)
+        {
+            return Ok(await _productService.CreateAsync(newProduct));
         }
     }
 }

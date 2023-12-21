@@ -16,7 +16,7 @@ namespace Web.Business.Interfaces
         Task<CommandResultModel<List<CategoryDto>>> GetAllAsync();
         Task<CommandResultModel<PagedResponseModel<CategoryDto>>> GetPagingAsync(CategoryQueryDto query);
         Task<CommandResultModel<CategoryDto>> GetByIdAsync(int id);
-        Task<CommandResultModel<PagedResponseModel<ProductDto>>> GetProductByCategoryAsync(ProductQueryDto query);
+        Task<CommandResultModel<PagedResponseModel<ProductDto>>> GetProductByCategoryAsync(int categoryId, ProductQueryDto query);
         Task<CommandResultModel<bool>> CreateAsync(CategoryCreateDto newCategory);
         Task<CommandResultModel<bool>> UpdateAsync(CategoryUpdateDto updateCategory);
         Task<CommandResultModel<bool>> DeleteAsync(int id);

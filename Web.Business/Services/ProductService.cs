@@ -24,15 +24,45 @@ namespace Web.Business.Services
             _mapper = mapper;
         }
 
-        public async Task<CommandResultModel<PagedResponseModel<ProductDto>>> GetProductAsync(ProductQueryDto query)
+        public async Task<CommandResultModel<bool>> CreateAsync(ProductCreateDto newProduct)
+        {
+            try
+            {
+                var product = _mapper.Map<Product>(newProduct);
+                product.DateCreated = DateTime.Now;
+                product.ProductsInCategories = new List<ProductsInCategories>();
+                foreach (var cate in newProduct.CategoriesId)
+                {
+                    var newProInCate = new ProductsInCategories()
+                    {
+                        CategoryId = cate
+                    };
+                    product.ProductsInCategories.Add(newProInCate);
+                };
+                await _productRepository.Add(product);
+                return new CommandResultModel<bool>
+                {
+                    StatusCode = (int)HttpStatusCode.Created,
+                    Message = "Created success",
+                    Data = true
+                };
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<CommandResultModel<PagedResponseModel<ProductDto>>> GetProductAsync(int? categoryId, ProductQueryDto query)
         {
             try
             {
                 var queryResult = _productRepository.Entities.AsNoTracking().AsQueryable();
-                if (query.CategoryId != null)
+                if (categoryId != null)
                 {
                     var productsInCate = await _productInCateRepository.Entities
-                                            .Where(x => x.CategoryId == query.CategoryId)
+                                            .Where(x => x.CategoryId == categoryId)
                                             .Select(x => x.ProductId)
                                             .ToListAsync();
                     queryResult = queryResult.Where(x => productsInCate.Contains(x.Id));
