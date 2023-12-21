@@ -5,12 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using Web.Contracts.Dtos.AuthDtos;
 using Web.Contracts.Dtos.CategoryDtos;
+using Web.Contracts.Dtos.ProductDtos;
 using Web.Contracts.Dtos.UserDtos;
 using Web.DataAccessor.Entities;
 
 namespace Web.Business
 {
-    public class AutoMapperProfile: AutoMapper.Profile
+    public class AutoMapperProfile : AutoMapper.Profile
     {
         public AutoMapperProfile()
         {
@@ -24,6 +25,8 @@ namespace Web.Business
             CreateMap<CategoryUpdateDto, Category>();
             //Mapping user from UI to entity server
             CreateMap<UserRegisterDto, User>();
+            //Mapping product from UI to entity server
+            CreateMap<ProductCreateDto, Product>();
         }
         private void FromDataAccessorLayer()
         {
@@ -32,6 +35,8 @@ namespace Web.Business
             //Mapping user from data layer to UI
             CreateMap<User, UserDto>();
             CreateMap<User, AccountDto>();
+            //Mapping product from data layer to UI
+            CreateMap<Product, ProductDto>();
         }
     }
 }

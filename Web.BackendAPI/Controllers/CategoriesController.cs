@@ -40,9 +40,9 @@ namespace Web.BackendAPI.Controllers
         [HttpGet]
         [Route("{id}/products")]
         [AllowAnonymous]
-        public async Task<ActionResult> GetProductsByCategory([FromQuery] ProductQueryDto query)
+        public async Task<ActionResult> GetProductsByCategory(int id, [FromQuery] ProductQueryDto query)
         {
-            return Ok(await _categoryService.GetProductByCategoryAsync(query));
+            return Ok(await _categoryService.GetProductByCategoryAsync(id, query));
         }
         [HttpPost]
         public async Task<ActionResult> Create([FromForm] CategoryCreateDto newCategory)

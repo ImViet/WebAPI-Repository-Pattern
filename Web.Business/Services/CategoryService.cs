@@ -119,6 +119,7 @@ namespace Web.Business.Services
                 {
                     StatusCode = (int)HttpStatusCode.Created,
                     Message = "Create success",
+                    Data = true
                 };
             }
             catch (Exception)
@@ -142,6 +143,7 @@ namespace Web.Business.Services
                 {
                     StatusCode = (int)HttpStatusCode.OK,
                     Message = "Update success",
+                    Data = true
                 };
             }
             catch (Exception)
@@ -163,7 +165,8 @@ namespace Web.Business.Services
                 return new CommandResultModel<bool>()
                 {
                     StatusCode = (int)HttpStatusCode.OK,
-                    Message = "Delete success"
+                    Message = "Delete success",
+                    Data = true
                 };
             }
             catch (Exception)
@@ -172,9 +175,9 @@ namespace Web.Business.Services
             }
         }
 
-        public async Task<CommandResultModel<PagedResponseModel<ProductDto>>> GetProductByCategoryAsync(ProductQueryDto query)
+        public async Task<CommandResultModel<PagedResponseModel<ProductDto>>> GetProductByCategoryAsync(int id, ProductQueryDto query)
         {
-            return await _productService.GetProductAsync(query);
+            return await _productService.GetProductAsync(id, query);
         }
     }
 }
