@@ -10,7 +10,9 @@ using System.Threading.Tasks;
 using Web.Business.Extensions;
 using Web.Business.Interfaces;
 using Web.Contracts.Dtos.CategoryDtos;
+using Web.Contracts.Dtos.ProductDtos;
 using Web.Contracts.Dtos.QueryDtos.CategoryQueryDtos;
+using Web.Contracts.Dtos.QueryDtos.ProductQueryDto;
 using Web.Contracts.Exceptions;
 using Web.Contracts.Models;
 using Web.DataAccessor.Data;
@@ -23,11 +25,14 @@ namespace Web.Business.Services
         private readonly IBaseRepository<Category> _categoryRepository;
         private readonly IMapper _mapper;
         private readonly ApplicationDbContext _context;
-        public CategoryService(IBaseRepository<Category> categoryRepository, IMapper mapper, ApplicationDbContext context)
+        private readonly IProductService _productService;
+        public CategoryService(IBaseRepository<Category> categoryRepository, IMapper mapper,
+         ApplicationDbContext context, IProductService productService)
         {
             _categoryRepository = categoryRepository;
             _mapper = mapper;
             _context = context;
+            _productService = productService;
         }
         public async Task<CommandResultModel<List<CategoryDto>>> GetAllAsync()
         {
@@ -165,6 +170,11 @@ namespace Web.Business.Services
             {
                 throw;
             }
+        }
+
+        public async Task<CommandResultModel<PagedResponseModel<ProductDto>>> GetProductByCategoryAsync(ProductQueryDto query)
+        {
+            return await _productService.GetProductAsync(query);
         }
     }
 }

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Web.Business.Interfaces;
 using Web.Contracts.Dtos.CategoryDtos;
 using Web.Contracts.Dtos.QueryDtos.CategoryQueryDtos;
+using Web.Contracts.Dtos.QueryDtos.ProductQueryDto;
 
 namespace Web.BackendAPI.Controllers
 {
@@ -18,12 +19,14 @@ namespace Web.BackendAPI.Controllers
             _categoryService = categoryService;
         }
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult> GetAll()
         {
             return Ok(await _categoryService.GetAllAsync());
         }
         [HttpGet]
-        [Route("get-paging")]
+        [Route("paging")]
+        [AllowAnonymous]
         public async Task<ActionResult> GetPaging([FromQuery] CategoryQueryDto query)
         {
             return Ok(await _categoryService.GetPagingAsync(query));
@@ -34,17 +37,24 @@ namespace Web.BackendAPI.Controllers
         {
             return Ok(await _categoryService.GetByIdAsync(id));
         }
+        [HttpGet]
+        [Route("{id}/products")]
+        [AllowAnonymous]
+        public async Task<ActionResult> GetProductsByCategory([FromQuery] ProductQueryDto query)
+        {
+            return Ok(await _categoryService.GetProductByCategoryAsync(query));
+        }
         [HttpPost]
         public async Task<ActionResult> Create([FromForm] CategoryCreateDto newCategory)
         {
             return Ok(await _categoryService.CreateAsync(newCategory));
         }
-        [HttpPut("update")]
+        [HttpPut]
         public async Task<ActionResult> Update([FromForm] CategoryUpdateDto updateCategory)
         {
             return Ok(await _categoryService.UpdateAsync(updateCategory));
         }
-        [HttpDelete("delete")]
+        [HttpDelete]
         public async Task<ActionResult> Delete(int id)
         {
             return Ok(await _categoryService.DeleteAsync(id));

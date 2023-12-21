@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Web.Contracts.Constants;
 
 namespace Web.Contracts.Dtos
 {
     public class BaseQueryDto
     {
-        public int PageIndex { get; set; }
-        public int PageSize { get; set; }
+        public int PageIndex { get; set; } = PaginationSetting.PageIndex;
+        public int PageSize { get; set; } = PaginationSetting.PageSize;
         public string? Search { get; set; } = string.Empty;
     }
 }
