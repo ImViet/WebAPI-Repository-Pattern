@@ -27,6 +27,10 @@ if (app.Environment.IsDevelopment())
 }
 app.UseMiddleware<ErrorHandlerMiddleware>();
 app.UseHttpsRedirection();
+app.UseCors(builder =>
+   {
+       builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+   });
 app.UseAuthentication();
 app.UseAuthorization();
 
