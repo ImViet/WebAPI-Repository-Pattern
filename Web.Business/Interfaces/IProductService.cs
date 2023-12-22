@@ -6,7 +6,9 @@ namespace Web.Business.Interfaces
 {
     public interface IProductService
     {
-        Task<CommandResultModel<PagedResponseModel<ProductDto>>> GetProductAsync(int? categoryId, ProductQueryDto query);
+        Task<CommandResultModel<List<ProductDto>>> GetAllAsync();
+        Task<CommandResultModel<PagedResponseModel<ProductDto>>> GetProductAsync(ProductQueryDto query);
+        Task<CommandResultModel<ProductDto>> GetByIdAsync(int id);
         Task<CommandResultModel<bool>> CreateAsync(ProductCreateDto newProduct);
     }
 }

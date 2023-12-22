@@ -175,9 +175,10 @@ namespace Web.Business.Services
             }
         }
 
-        public async Task<CommandResultModel<PagedResponseModel<ProductDto>>> GetProductByCategoryAsync(int id, ProductQueryDto query)
+        public async Task<CommandResultModel<PagedResponseModel<ProductDto>>> GetProductByCategoryAsync(int categoryId, ProductQueryDto query)
         {
-            return await _productService.GetProductAsync(id, query);
+            query.CategoryId = categoryId;
+            return await _productService.GetProductAsync(query);
         }
     }
 }

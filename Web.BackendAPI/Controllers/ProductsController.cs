@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Web.Business.Interfaces;
 using Web.Contracts.Dtos.ProductDtos;
+using Web.Contracts.Dtos.QueryDtos.ProductQueryDto;
 
 namespace Web.BackendAPI.Controllers
 {
@@ -14,6 +15,19 @@ namespace Web.BackendAPI.Controllers
         public ProductsController(IProductService productService)
         {
             _productService = productService;
+        }
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<ActionResult> GetAll()
+        {
+            return Ok(await _productService.GetAllAsync());
+        }
+        [HttpGet]
+        [Route("{id}")]
+        [AllowAnonymous]
+        public async Task<ActionResult> GetById(int id)
+        {
+            return Ok(await _productService.GetByIdAsync(id));
         }
         [HttpPost]
         public async Task<ActionResult> Create([FromForm] ProductCreateDto newProduct)
