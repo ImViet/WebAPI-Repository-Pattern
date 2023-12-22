@@ -5,6 +5,7 @@ using Web.Business.Extensions;
 using Web.Business.Interfaces;
 using Web.Contracts.Dtos.ProductDtos;
 using Web.Contracts.Dtos.QueryDtos.ProductQueryDto;
+using Web.Contracts.Exceptions;
 using Web.Contracts.Models;
 using Web.DataAccessor.Data;
 using Web.DataAccessor.Entities;
@@ -54,15 +55,56 @@ namespace Web.Business.Services
             }
         }
 
-        public async Task<CommandResultModel<PagedResponseModel<ProductDto>>> GetProductAsync(int? categoryId, ProductQueryDto query)
+        public async Task<CommandResultModel<List<ProductDto>>> GetAllAsync()
+        {
+            try
+            {
+                var queryResult = await _productRepository.Entities.AsNoTracking().ToListAsync();
+                return new CommandResultModel<List<ProductDto>>
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "Success",
+                    Data = _mapper.Map<List<ProductDto>>(queryResult)
+                };
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task<CommandResultModel<ProductDto>> GetByIdAsync(int id)
+        {
+            try
+            {
+                var queryResult = await _productRepository.GetByIdAsync(id);
+                if (queryResult == null)
+                {
+                    throw new BadRequestException("Product is not exist");
+                }
+                return new CommandResultModel<ProductDto>
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "Success",
+                    Data = _mapper.Map<ProductDto>(queryResult)
+                };
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<CommandResultModel<PagedResponseModel<ProductDto>>> GetProductAsync(ProductQueryDto query)
         {
             try
             {
                 var queryResult = _productRepository.Entities.AsNoTracking().AsQueryable();
-                if (categoryId != null)
+                if (query.CategoryId != null)
                 {
                     var productsInCate = await _productInCateRepository.Entities
-                                            .Where(x => x.CategoryId == categoryId)
+                                            .Where(x => x.CategoryId == query.CategoryId)
                                             .Select(x => x.ProductId)
                                             .ToListAsync();
                     queryResult = queryResult.Where(x => productsInCate.Contains(x.Id));
