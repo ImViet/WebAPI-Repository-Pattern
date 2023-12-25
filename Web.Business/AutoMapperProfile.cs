@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Web.Contracts.Dtos.AuthDtos;
 using Web.Contracts.Dtos.CategoryDtos;
+using Web.Contracts.Dtos.ImageDtos;
 using Web.Contracts.Dtos.ProductDtos;
 using Web.Contracts.Dtos.UserDtos;
 using Web.DataAccessor.Entities;
@@ -37,6 +38,8 @@ namespace Web.Business
             CreateMap<User, AccountDto>();
             //Mapping product from data layer to UI
             CreateMap<Product, ProductDto>();
+            //Mapping product image from data layer to UI
+            CreateMap<ProductImage, ImageDto>();
         }
     }
 }

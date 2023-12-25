@@ -3,6 +3,7 @@ using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Web.Business.Extensions;
 using Web.Business.Interfaces;
+using Web.Contracts.Dtos.ImageDtos;
 using Web.Contracts.Dtos.ProductDtos;
 using Web.Contracts.Dtos.QueryDtos.ProductQueryDto;
 using Web.Contracts.Exceptions;
@@ -16,13 +17,19 @@ namespace Web.Business.Services
     {
         private readonly IBaseRepository<Product> _productRepository;
         private readonly IBaseRepository<ProductsInCategories> _productInCateRepository;
+        private readonly IBaseRepository<ProductImage> _productImageRepository;
         private readonly IMapper _mapper;
+        private readonly ApplicationDbContext _context;
         public ProductService(IBaseRepository<Product> productRepository,
-        IBaseRepository<ProductsInCategories> productInCateRepository, IMapper mapper)
+        IBaseRepository<ProductsInCategories> productInCateRepository,
+        IBaseRepository<ProductImage> productImageRepository,
+        IMapper mapper, ApplicationDbContext context)
         {
             _productRepository = productRepository;
             _productInCateRepository = productInCateRepository;
+            _productImageRepository = productImageRepository;
             _mapper = mapper;
+            _context = context;
         }
 
         public async Task<CommandResultModel<bool>> CreateAsync(ProductCreateDto newProduct)
@@ -82,16 +89,19 @@ namespace Web.Business.Services
                 {
                     throw new BadRequestException("Product is not exist");
                 }
+                var data = _mapper.Map<ProductDto>(queryResult);
+                var listImages = await _productImageRepository.Entities
+                                        .Where(x => x.ProductId == queryResult.Id).ToListAsync();
+                data.Images = _mapper.Map<List<ImageDto>>(listImages);
                 return new CommandResultModel<ProductDto>
                 {
                     StatusCode = (int)HttpStatusCode.OK,
                     Message = "Success",
-                    Data = _mapper.Map<ProductDto>(queryResult)
+                    Data = data
                 };
             }
             catch (Exception)
             {
-
                 throw;
             }
         }
@@ -100,14 +110,14 @@ namespace Web.Business.Services
         {
             try
             {
-                var queryResult = _productRepository.Entities.AsNoTracking().AsQueryable();
+                var queryResult = _context.Products
+                                    .Include(x => x.Images)
+                                    .Include(x => x.ProductsInCategories)
+                                    .AsNoTracking()
+                                    .AsQueryable();
                 if (query.CategoryId != null)
                 {
-                    var productsInCate = await _productInCateRepository.Entities
-                                            .Where(x => x.CategoryId == query.CategoryId)
-                                            .Select(x => x.ProductId)
-                                            .ToListAsync();
-                    queryResult = queryResult.Where(x => productsInCate.Contains(x.Id));
+                    queryResult = queryResult.Where(x => x.ProductsInCategories.Any(y => y.CategoryId == query.CategoryId));
                 }
 
                 var pagedResult = await queryResult
