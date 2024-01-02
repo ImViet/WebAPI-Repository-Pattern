@@ -66,12 +66,16 @@ namespace Web.Business.Services
         {
             try
             {
-                var queryResult = await _productRepository.Entities.AsNoTracking().ToListAsync();
+                var queryResult = _context.Products
+                                    .Include(x => x.Images)
+                                    .AsNoTracking()
+                                    .AsQueryable();
+                var data = _mapper.Map<List<ProductDto>>(queryResult);
                 return new CommandResultModel<List<ProductDto>>
                 {
                     StatusCode = (int)HttpStatusCode.OK,
                     Message = "Success",
-                    Data = _mapper.Map<List<ProductDto>>(queryResult)
+                    Data = data
                 };
             }
             catch (Exception)
@@ -141,7 +145,30 @@ namespace Web.Business.Services
             }
             catch (Exception)
             {
+                throw;
+            }
+        }
 
+        public async Task<CommandResultModel<List<ProductDto>>> GetSuggestionProduct(string keyword)
+        {
+            try
+            {
+                var queryResult = await _context.Products
+                                    .Include(x => x.Images)
+                                    .Where(x => x.Title.ToLower().Contains(keyword.ToLower()))
+                                    .Take(10)
+                                    .ToListAsync();
+
+                var data = _mapper.Map<List<ProductDto>>(queryResult);
+                return new CommandResultModel<List<ProductDto>>
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "Success",
+                    Data = data
+                };
+            }
+            catch (Exception)
+            {
                 throw;
             }
         }

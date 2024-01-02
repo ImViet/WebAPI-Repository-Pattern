@@ -29,6 +29,13 @@ namespace Web.BackendAPI.Controllers
         {
             return Ok(await _productService.GetByIdAsync(id));
         }
+        [HttpGet]
+        [Route("suggestion")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetSuggestionProduct(string keyword)
+        {
+            return Ok(await _productService.GetSuggestionProduct(keyword));
+        }
         [HttpPost]
         public async Task<ActionResult> Create([FromForm] ProductCreateDto newProduct)
         {
