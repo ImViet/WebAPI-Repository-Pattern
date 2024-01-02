@@ -8,6 +8,7 @@ namespace Web.Business.Interfaces
     {
         Task<CommandResultModel<List<ProductDto>>> GetAllAsync();
         Task<CommandResultModel<PagedResponseModel<ProductDto>>> GetProductAsync(ProductQueryDto query);
+        Task<CommandResultModel<List<ProductDto>>> GetSuggestionProduct(string keyword);
         Task<CommandResultModel<ProductDto>> GetByIdAsync(int id);
         Task<CommandResultModel<bool>> CreateAsync(ProductCreateDto newProduct);
     }
